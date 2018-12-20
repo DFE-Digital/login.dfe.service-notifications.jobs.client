@@ -76,44 +76,4 @@ describe('when sending userupdated_v1', () => {
       expect(job.save).toHaveBeenCalledTimes(1);
     }
   });
-
-  it('then it should error if user not passed', async () => {
-    try {
-      await client.notifyUserUpdated(undefined);
-      throw new Error('no error thrown');
-    } catch (e) {
-      expect(e.message).toBe('User must be provided');
-      expect(job.save).toHaveBeenCalledTimes(0);
-    }
-  });
-
-  it('then it should error if user has no sub', async () => {
-    try {
-      await client.notifyUserUpdated(omit(user, ['sub']));
-      throw new Error('no error thrown');
-    } catch (e) {
-      expect(e.message).toBe('User must have sub');
-      expect(job.save).toHaveBeenCalledTimes(0);
-    }
-  });
-
-  it('then it should error if user has no email', async () => {
-    try {
-      await client.notifyUserUpdated(omit(user, ['email']));
-      throw new Error('no error thrown');
-    } catch (e) {
-      expect(e.message).toBe('User must have email');
-      expect(job.save).toHaveBeenCalledTimes(0);
-    }
-  });
-
-  it('then it should error if user has no status.id', async () => {
-    try {
-      await client.notifyUserUpdated(omit(user, ['status']));
-      throw new Error('no error thrown');
-    } catch (e) {
-      expect(e.message).toBe('User must have status.id');
-      expect(job.save).toHaveBeenCalledTimes(0);
-    }
-  });
 });
