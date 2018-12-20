@@ -18,7 +18,6 @@ const organisation = {
     name: 'Establishment',
   }
 };
-const reason = 'CREATE';
 
 describe('when sending organisationupdated_v1', () => {
   let client;
@@ -36,7 +35,7 @@ describe('when sending organisationupdated_v1', () => {
   });
 
   it('then it should create new queue connection to redis', async () => {
-    await client.notifyOrganisationUpdated(organisation, reason);
+    await client.notifyOrganisationUpdated(organisation);
 
     expect(kue.createQueue).toHaveBeenCalledTimes(1);
     expect(kue.createQueue.mock.calls[0][0]).toEqual({
@@ -45,24 +44,21 @@ describe('when sending organisationupdated_v1', () => {
   });
 
   it('then it should create job with correct type', async () => {
-    await client.notifyOrganisationUpdated(organisation, reason);
+    await client.notifyOrganisationUpdated(organisation);
 
     expect(queue.create).toHaveBeenCalledTimes(1);
     expect(queue.create.mock.calls[0][0]).toBe('organisationupdated_v1');
   });
 
   it('then it should create job with correct data', async () => {
-    await client.notifyOrganisationUpdated(organisation, reason);
+    await client.notifyOrganisationUpdated(organisation);
 
     expect(queue.create).toHaveBeenCalledTimes(1);
-    expect(queue.create.mock.calls[0][1]).toEqual({
-      organisation,
-      reason,
-    });
+    expect(queue.create.mock.calls[0][1]).toEqual(organisation);
   });
 
   it('then it should save job', async () => {
-    await client.notifyOrganisationUpdated(organisation, reason);
+    await client.notifyOrganisationUpdated(organisation);
 
     expect(job.save).toHaveBeenCalledTimes(1);
   });
@@ -73,7 +69,7 @@ describe('when sending organisationupdated_v1', () => {
     });
 
     try {
-      await client.notifyOrganisationUpdated(organisation, reason);
+      await client.notifyOrganisationUpdated(organisation);
       throw new Error('no error thrown');
     } catch (e) {
       expect(e.message).toBe('test');
@@ -83,7 +79,7 @@ describe('when sending organisationupdated_v1', () => {
 
   it('then it should error if organisation not passed', async () => {
     try {
-      await client.notifyOrganisationUpdated(undefined, reason);
+      await client.notifyOrganisationUpdated(undefined);
       throw new Error('no error thrown');
     } catch (e) {
       expect(e.message).toBe('Organisation must be provided');
@@ -95,7 +91,7 @@ describe('when sending organisationupdated_v1', () => {
     const brokenOrganisation = Object.assign({}, organisation, { id: undefined });
 
     try {
-      await client.notifyOrganisationUpdated(brokenOrganisation, reason);
+      await client.notifyOrganisationUpdated(brokenOrganisation);
       throw new Error('no error thrown');
     } catch (e) {
       expect(e.message).toBe('Organisation must have id');
@@ -107,7 +103,7 @@ describe('when sending organisationupdated_v1', () => {
     const brokenOrganisation = Object.assign({}, organisation, { name: undefined });
 
     try {
-      await client.notifyOrganisationUpdated(brokenOrganisation, reason);
+      await client.notifyOrganisationUpdated(brokenOrganisation);
       throw new Error('no error thrown');
     } catch (e) {
       expect(e.message).toBe('Organisation must have name');
@@ -119,7 +115,7 @@ describe('when sending organisationupdated_v1', () => {
     const brokenOrganisation = Object.assign({}, organisation, { category: undefined });
 
     try {
-      await client.notifyOrganisationUpdated(brokenOrganisation, reason);
+      await client.notifyOrganisationUpdated(brokenOrganisation);
       throw new Error('no error thrown');
     } catch (e) {
       expect(e.message).toBe('Organisation must have category');
@@ -131,21 +127,11 @@ describe('when sending organisationupdated_v1', () => {
     const brokenOrganisation = Object.assign({}, organisation, { category: { name: 'category one' } });
 
     try {
-      await client.notifyOrganisationUpdated(brokenOrganisation, reason);
+      await client.notifyOrganisationUpdated(brokenOrganisation);
       throw new Error('no error thrown');
     } catch (e) {
       expect(e.message).toBe('Organisation must have category.id');
       expect(job.save).toHaveBeenCalledTimes(0);
     }
-  });
-
-  it('then it should default reason to UPDATE if not provided', async () => {
-    await client.notifyOrganisationUpdated(organisation, undefined);
-
-    expect(queue.create).toHaveBeenCalledTimes(1);
-    expect(queue.create.mock.calls[0][1]).toEqual({
-      organisation,
-      reason: 'UPDATE',
-    });
   });
 });
