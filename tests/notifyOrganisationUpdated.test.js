@@ -23,7 +23,9 @@ describe('when sending organisationupdated_v1', () => {
   let client;
 
   beforeEach(() => {
+    job.id = undefined;
     job.save.mockReset().mockImplementation((cb) => {
+      job.id = (job.id || 0) + 1;
       cb();
     });
 
@@ -61,6 +63,12 @@ describe('when sending organisationupdated_v1', () => {
     await client.notifyOrganisationUpdated(organisation);
 
     expect(job.save).toHaveBeenCalledTimes(1);
+  });
+
+  it('then it should return job id', async () => {
+    const jobId = await client.notifyOrganisationUpdated(organisation);
+
+    expect(jobId).toBe(1);
   });
 
   it('then it should error if fails to save job', async () => {
