@@ -1,6 +1,6 @@
 {
   "name": "login.dfe.service-notifications.jobs.client",
-  "version": "1.0.0",
+  "version": "2.0.1",
   "description": "Client for raising inter-service notifications",
   "main": "lib/index.js",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/DFE-Digital/login.dfe.service-notifications.jobs.client#readme",
   "dependencies": {
-    "kue": "^0.11.6"
+    "login.dfe.kue": "github:DFE-Digital/login.dfe.kue#v0.12.0"
   },
   "devDependencies": {
     "eslint": "^8.14.0",
