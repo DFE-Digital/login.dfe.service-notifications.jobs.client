@@ -1,6 +1,6 @@
-jest.mock('kue');
+jest.mock('login.dfe.kue');
 
-const kue = require('kue');
+const kue = require('login.dfe.kue');
 const PublicApiClient = require('./../lib');
 
 const job = {
